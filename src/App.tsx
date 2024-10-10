@@ -1,9 +1,8 @@
-// App.tsx
 import React, { useState } from "react";
 import { Attributes } from "./types";
 import CharacterAttributes from "./components/CharacterAttributes/CharacterAttributes";
 import CharacterSkills from "./components/CharacterSkills/CharacterSkills";
-import ClassDisplay from "./components/classDisplay/classDisplay";
+import { saveCharacter } from "./api";
 
 const App: React.FC = () => {
   const [attributes, setAttributes] = useState<Attributes>({
@@ -15,6 +14,17 @@ const App: React.FC = () => {
     Charisma: 10,
   });
 
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSave = async () => {
+    try {
+      await saveCharacter({ attributes });
+      alert("Character saved successfully!");
+    } catch (err) {
+      setError("Error saving character.");
+    }
+  };
+
   return (
     <div>
       <h1>Character</h1>
@@ -23,7 +33,8 @@ const App: React.FC = () => {
         setAttributes={setAttributes}
       />
       <CharacterSkills attributes={attributes} />
-      <ClassDisplay attributes={attributes} /> {}
+      <button onClick={handleSave}>Save Character</button>
+      {error && <div>{error}</div>}
     </div>
   );
 };
